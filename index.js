@@ -1,61 +1,47 @@
-// Sample Code
-
-function onMessage(data) {
-	let prefix = data.message.slice(0, 1);
-	let splitted = data.message.slice(1).toLowerCase().split(' ');
-	
-	if (prefix == '.') {
-		switch (splitted[0]) {
-			case 'ping':
-				sendMessage('Pong!');
-				break;
-			case 'calc':
-				let expression = splitted.slice(1).join('').replace(/[^-()\d/*+.]/g, '');
-				let value = eval(expression); 
-				
-				if (value)
-					sendMessage('Expression:  ', expression, '\nResult: ', value);
-				break;
-			case 'hi':
-				sendMessage('Hello, ', data.username, '!');
-				break;
-			case 'invite':
-				sendMessage('Invite URL: ', window.location.href.split('?')[0]);
-				break;
-			default:
-				break;
-		}
-	}
-}
-
 // Framework Code
 
 (() => {
 	let messagesLength = -1;
 	let lastMessageLength = -1;
-
-	window.sendMessage = function(...args) {
-		let message = document.querySelector('div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div > div > div > div > textarea');
-		let button = document.querySelector('div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div:nth-child(3) > div:nth-child(2)');
-		
-		if (message && button) {
-			message.value = args.join('');
-			button.ariaDisabled = null
-			button.click();
+	let events = {};
+	
+	window.chatbot = {
+		sendMessage: function(...args) {
+			let message = document.querySelector("div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div > div > div > div > textarea");
+			let button = document.querySelector("div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div:nth-child(3) > div:nth-child(2)");
 			
-			return message.value == '';
+			if (message && button) {
+				let lastValue = message.value + "";
+				message.value = args.join("");
+
+				button.ariaDisabled = null
+				button.click();
+				
+				let success = message.value === "";
+				message.value = lastValue;
+				
+				return success;
+			}
+			
+			return false;
+		},
+		on: function(event, f) {
+			if (!events[event] && typeof(f) == "function")
+				events[event] = f
+		},
+		emit: function(event, ...args) {
+			if (events[event])
+				events[event](...args);
 		}
-		
-		return false;
 	}
 
 	if (window.messagesInterval)
 		try {
-			clearInterval(messagesInterval)
+			clearInterval(messagesInterval);
 		} catch (err) {}
 
 	window.messagesInterval = setInterval(() => {
-		var messages = document.querySelector('div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div').childNodes;
+		var messages = document.querySelector("div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div").childNodes;
 		
 		if (messages) {
 			if (messages.length > 0)
@@ -70,14 +56,40 @@ function onMessage(data) {
 				messagesLength = messages.length;
 				lastMessageLength = message.childNodes[1].childNodes.length;
 
-				if (onMessage && typeof(onMessage) == 'function') {
-					onMessage({
-						username: message.dataset.senderName,
-						message: messageText,
-						date: parseInt(message.dataset.timestamp)
-					});
-				}
+				window.chatbot.emit("message", message.dataset.senderName, messageText, parseInt(message.dataset.timestamp));
 			}
 		}
 	}, 100);
 })();
+
+// Sample Code
+const prefix = '.';
+
+chatbot.on("message", (username, message, date) => {
+	let m_prefix = message.slice(0, prefix.length);
+	let splitted = message.slice(prefix.length).toLowerCase().split(' ');
+	
+	if (m_prefix === prefix) {
+		switch (splitted[0]) {
+			case "ping":
+				chatbot.sendMessage("Pong!");
+				break;
+			case "calc":
+				let expression = splitted.slice(1).join("").replace(/[^-()\d/*+.]/g, "");
+				let value = eval(expression); 
+				
+				if (value)
+					chatbot.sendMessage("Expression:  ", expression, "\nResult: ", value);
+				break;
+			case "hi":
+				chatbot.sendMessage("Hello, ", username, '!');
+				break;
+			case "invite":
+				chatbot.sendMessage("Invite URL: ", window.location.href.split('?')[0]);
+				break;
+			default:
+				chatbot.sendMessage("Command not found.");
+				break;
+		}
+	}
+});
