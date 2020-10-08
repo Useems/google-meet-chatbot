@@ -7,8 +7,8 @@
 	
 	window.chatbot = {
 		sendMessage: function(...args) {
-			let message = document.querySelector("div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div > div > div > div > textarea");
-			let button = document.querySelector("div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div:nth-child(3) > div:nth-child(2)");
+			let message = document.querySelector("div > div > div:nth-child(5) > div > div > div > div > div > div > span:nth-child(2) > div > div > div > div > div > textarea");
+			let button = document.querySelector("div > div > div:nth-child(5) > div > div > div > div > div > div > span:nth-child(2) > div > div:nth-child(3) > div:nth-child(2)");
 			
 			if (message && button) {
 				let lastValue = message.value + "";
@@ -41,7 +41,7 @@
 		} catch (err) {}
 
 	window.messagesInterval = setInterval(() => {
-		var messages = document.querySelector("div > div > div:nth-child(4) > div > div > div > div > div > div > span:nth-child(2) > div > div").childNodes;
+		var messages = document.querySelector("div > div > div:nth-child(5) > div > div > div > div > div > div > span:nth-child(2) > div > div").childNodes;
 		
 		if (messages) {
 			if (messages.length > 0)
@@ -63,7 +63,7 @@
 })();
 
 // Sample Code
-const prefix = '.';
+var prefix = '.';
 
 chatbot.on("message", (username, message, date) => {
 	let m_prefix = message.slice(0, prefix.length);
