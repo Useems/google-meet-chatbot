@@ -1,5 +1,4 @@
 // Framework Code
-
 (() => {
 	let messagesLength = -1;
 	let lastMessageLength = -1;
@@ -7,7 +6,7 @@
 	
 	window.chatbot = {
 		sendMessage: function(...args) {
-			let message = document.querySelector("div > div > div > div > div > div > div[data-is-persistent=\"true\"] > div > div > span > div[data-reverse-order=\"false\"] > div > div > div > div > textarea");
+			let message = document.querySelector("*[name=\"chatTextInput\"]");
 			let button = document.querySelector("div > div > div > div > div > div > div[data-is-persistent=\"true\"] > div > div > span > div[data-reverse-order=\"false\"] > div > div[data-tooltip-horizontal-offset=\"0\"]");
 			
 			if (message && button) {
@@ -41,8 +40,8 @@
 		} catch (err) {}
 
 	window.messagesInterval = setInterval(() => {
-		var messages = document.querySelector("div > div > div > div > div > div > div[data-is-persistent=\"true\"] > div > div > span > div[data-reverse-order=\"false\"] > div").childNodes;
-		
+		var messages = document.querySelector("* > div > div > div > div > div > div > div[data-is-persistent=\"true\"] > div > div > span > div[data-reverse-order=\"false\"] > div[aria-live=\"polite\"]").childNodes;
+
 		if (messages) {
 			if (messages.length > 0)
 				var message = messages[messages.length - 1];
