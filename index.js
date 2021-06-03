@@ -1,4 +1,3 @@
-// Framework Code
 (() => {
 	let messagesLength = -1;
 	let lastMessageLength = -1;
@@ -7,7 +6,7 @@
 	window.chatbot = {
 		sendMessage: function(...args) {
 			let message = document.querySelector("*[name=\"chatTextInput\"]");
-			let button = document.querySelector("div > div > div > div > div > div > div[data-is-persistent=\"true\"] > div > div > span > div[data-reverse-order=\"false\"] > div > div[data-tooltip-horizontal-offset=\"0\"]");
+			let button = message.parentElement.parentElement.parentElement.parentElement.children[1]; // Best way I found
 			
 			if (message && button) {
 				let lastValue = message.value + "";
@@ -40,7 +39,7 @@
 		} catch (err) {}
 
 	window.messagesInterval = setInterval(() => {
-		var messages = document.querySelector("* > div > div > div > div > div > div > div[data-is-persistent=\"true\"] > div > div > span > div[data-reverse-order=\"false\"] > div[aria-live=\"polite\"]").childNodes;
+		var messages = document.querySelectorAll('[data-sender-name]');
 
 		if (messages) {
 			if (messages.length > 0)
@@ -61,7 +60,7 @@
 	}, 100);
 })();
 
-// Sample Code
+// Sample
 var prefix = '.';
 
 chatbot.on("message", (username, message, date) => {
