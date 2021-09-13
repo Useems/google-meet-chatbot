@@ -7,8 +7,8 @@
 		sendMessage: function(...args) {
 			let message = document.querySelector("*[name=\"chatTextInput\"]");
 			let button = message.parentElement.parentElement.parentElement.parentElement.children[1].querySelector('button'); // Best way I found
-            button.disabled = false;
-			
+            		button.disabled = false;
+
 			if (message && button) {
 				let lastValue = message.value + "";
 				message.value = args.join("");
